@@ -1,0 +1,432 @@
+Elm.TodoItem = Elm.TodoItem || {};
+Elm.TodoItem.make = function (_elm) {
+   "use strict";
+   _elm.TodoItem = _elm.TodoItem || {};
+   if (_elm.TodoItem.values)
+   return _elm.TodoItem.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "TodoItem",
+   $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Static = Elm.Static.make(_elm),
+   $String = Elm.String.make(_elm);
+   var emptyStyle = _L.fromArray([]);
+   var snoozedStyle = _L.fromArray([{ctor: "_Tuple2"
+                                    ,_0: "visibility"
+                                    ,_1: "hidden"}
+                                   ,{ctor: "_Tuple2"
+                                    ,_0: "height"
+                                    ,_1: "0"}]);
+   var borderStyle = _L.fromArray([{ctor: "_Tuple2"
+                                   ,_0: "border-bottom"
+                                   ,_1: "thin dotted #666666"}]);
+   var overdueStyle = _L.fromArray([{ctor: "_Tuple2"
+                                    ,_0: "color"
+                                    ,_1: "red"}]);
+   var focusedStyle = _L.fromArray([{ctor: "_Tuple2"
+                                    ,_0: "border-left-width"
+                                    ,_1: "thick"}
+                                   ,{ctor: "_Tuple2"
+                                    ,_0: "border-left-style"
+                                    ,_1: "double"}
+                                   ,{ctor: "_Tuple2"
+                                    ,_0: "border-color"
+                                    ,_1: "rgb(170,255,255)"}
+                                   ,{ctor: "_Tuple2"
+                                    ,_0: "padding"
+                                    ,_1: "10px 10px 20px "}]);
+   var pinnedStyle = _L.fromArray([{ctor: "_Tuple2"
+                                   ,_0: "background-color"
+                                   ,_1: "rgb(218,223,224)"}]);
+   var combineAttributesAcc = function (list) {
+      return function () {
+         switch (list.ctor)
+         {case "::":
+            return A2($Basics._op["++"],
+              list._0,
+              combineAttributesAcc(list._1));
+            case "[]":
+            return _L.fromArray([]);}
+         _U.badCase($moduleName,
+         "between lines 264 and 267");
+      }();
+   };
+   var combineAttributes = function (list) {
+      return $Html$Attributes.style(combineAttributesAcc(list));
+   };
+   var getCorrectCss = F2(function (isFocused,
+   isPinned) {
+      return isFocused && isPinned ? combineAttributes(_L.fromArray([pinnedStyle
+                                                                    ,focusedStyle
+                                                                    ,borderStyle])) : isFocused ? combineAttributes(_L.fromArray([focusedStyle
+                                                                                                                                 ,borderStyle])) : isPinned ? combineAttributes(_L.fromArray([pinnedStyle
+                                                                                                                                                                                             ,borderStyle])) : combineAttributes(_L.fromArray([emptyStyle
+                                                                                                                                                                                                                                              ,borderStyle]));
+   });
+   var getIsSnoozed = function (model) {
+      return function () {
+         switch (model.ctor)
+         {case "E":
+            return model._0.isSnoozed;
+            case "R":
+            return model._0.isSnoozed;}
+         _U.badCase($moduleName,
+         "between lines 208 and 213");
+      }();
+   };
+   var getSnoozeDate = function (model) {
+      return function () {
+         switch (model.ctor)
+         {case "E":
+            return model._0.snoozeDate;
+            case "R":
+            return model._0.snoozeDate;}
+         _U.badCase($moduleName,
+         "between lines 203 and 205");
+      }();
+   };
+   var getDone = function (model) {
+      return function () {
+         switch (model.ctor)
+         {case "E": return model._0.done;
+            case "R": return model._0.done;}
+         _U.badCase($moduleName,
+         "between lines 198 and 200");
+      }();
+   };
+   var getPinned = function (model) {
+      return function () {
+         switch (model.ctor)
+         {case "E":
+            return model._0.pinned;
+            case "R":
+            return model._0.pinned;}
+         _U.badCase($moduleName,
+         "between lines 193 and 195");
+      }();
+   };
+   var getDate = function (model) {
+      return function () {
+         switch (model.ctor)
+         {case "E": return model._0.date;
+            case "R":
+            return model._0.created;}
+         _U.badCase($moduleName,
+         "between lines 188 and 190");
+      }();
+   };
+   var normalSort = F2(function (a,
+   b) {
+      return getDone(a) && $Basics.not(getDone(b)) ? $Basics.GT : $Basics.not(getDone(a)) && getDone(b) ? $Basics.LT : getPinned(a) && $Basics.not(getPinned(b)) ? $Basics.LT : $Basics.not(getPinned(a)) && getPinned(b) ? $Basics.GT : getPinned(a) && getPinned(b) || $Basics.not(getPinned(a)) && $Basics.not(getPinned(b)) ? _U.cmp(getDate(a),
+      getDate(b)) > 0 ? $Basics.GT : $Basics.LT : $Basics.EQ;
+   });
+   var reverseSort = F2(function (a,
+   b) {
+      return getDone(a) && $Basics.not(getDone(b)) ? $Basics.GT : $Basics.not(getDone(a)) && getDone(b) ? $Basics.LT : _U.cmp(getDate(a),
+      getDate(b)) > 0 ? $Basics.LT : $Basics.GT;
+   });
+   var Snooze = {ctor: "Snooze"};
+   var UpdateSnoozeDate = function (a) {
+      return {ctor: "UpdateSnoozeDate"
+             ,_0: a};
+   };
+   var Pin = {ctor: "Pin"};
+   var Mark = {ctor: "Mark"};
+   var More = {ctor: "More"};
+   var taskButton = F3(function (address,
+   action,
+   text) {
+      return A2($Html.button,
+      _L.fromArray([A2($Html$Events.onClick,
+      address,
+      action)]),
+      _L.fromArray([$Html.text(text)]));
+   });
+   var elementView = F4(function (context,
+   element,
+   isFocused,
+   isOverdue) {
+      return function () {
+         switch (element.ctor)
+         {case "E": return A2($Html.li,
+              _L.fromArray([isFocused ? combineAttributes(_L.fromArray([focusedStyle
+                                                                       ,borderStyle])) : combineAttributes(_L.fromArray([emptyStyle
+                                                                                                                        ,borderStyle]))]),
+              _L.fromArray([A2($Html.div,
+              _L.fromArray([element._0.pinned ? combineAttributes(_L.fromArray([pinnedStyle])) : combineAttributes(_L.fromArray([emptyStyle]))]),
+              _L.fromArray([A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text(A2($Basics._op["++"],
+                           element._0.title,
+                           A2($Basics._op["++"],
+                           " | ",
+                           element._0.from)))]))
+                           ,A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text($Basics.not(element._0.more) ? A2($String.left,
+                           200,
+                           element._0.body) : element._0.body)]))
+                           ,_U.cmp($String.length(element._0.body),
+                           200) > 0 ? A2(taskButton,
+                           context.actions,
+                           More)(element._0.more ? "Less" : "More") : $Html.text("")
+                           ,A3(taskButton,
+                           context.actions,
+                           Mark,
+                           element._0.done ? "Undo" : "Mark as Done")
+                           ,A3(taskButton,
+                           context.actions,
+                           Pin,
+                           element._0.pinned ? "Unpin" : "Pin")
+                           ,A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text(A2($Basics._op["++"],
+                           "Date: ",
+                           element._0.date))]))]))]));
+            case "R": return A2($Html.li,
+              _L.fromArray([A2(getCorrectCss,
+              isFocused,
+              element._0.pinned)]),
+              _L.fromArray([A2($Html.div,
+              _L.fromArray([]),
+              _L.fromArray([A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text(element._0.body)]))
+                           ,A3(taskButton,
+                           context.actions,
+                           Mark,
+                           element._0.done ? "Undo" : "Mark as Done")
+                           ,A3(taskButton,
+                           context.actions,
+                           Pin,
+                           element._0.pinned ? "Unpin" : "Pin")
+                           ,$Basics.not(element._0.done) ? A2($Html.input,
+                           _L.fromArray([$Html$Attributes.type$("date")
+                                        ,$Html$Attributes.value(getSnoozeDate(element))
+                                        ,A3($Html$Events.on,
+                                        "input",
+                                        $Html$Events.targetValue,
+                                        function ($) {
+                                           return $Signal.message(context.actions)(UpdateSnoozeDate($));
+                                        })]),
+                           _L.fromArray([])) : $Html.text("")
+                           ,$Basics.not(element._0.done) ? A2($Html.button,
+                           _L.fromArray([A2($Html$Events.onClick,
+                           context.actions,
+                           Snooze)]),
+                           _L.fromArray([$Html.text("Snooze")])) : $Html.text("")
+                           ,A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text(A2($Basics._op["++"],
+                           "Date: ",
+                           element._0.created))]))
+                           ,isOverdue ? A2($Html.p,
+                           _L.fromArray([combineAttributes(_L.fromArray([overdueStyle]))]),
+                           _L.fromArray([$Html.text("Overdue: Yes")])) : $Html.text("")]))]));}
+         _U.badCase($moduleName,
+         "between lines 81 and 124");
+      }();
+   });
+   var emailCompare = F2(function (email1,
+   email2) {
+      return _U.eq(email1.from,
+      email2.from) && (_U.eq(email1.to,
+      email2.to) && (_U.eq(email1.title,
+      email2.title) && (_U.eq(email1.body,
+      email2.body) && _U.eq(email1.date,
+      email2.date)))) ? true : false;
+   });
+   var compareModel = F2(function (model1,
+   model2) {
+      return function () {
+         switch (model1.ctor)
+         {case "E": return function () {
+                 switch (model2.ctor)
+                 {case "E":
+                    return A2(emailCompare,
+                      model1._0,
+                      model2._0);
+                    case "R": return false;}
+                 _U.badCase($moduleName,
+                 "between lines 61 and 63");
+              }();
+            case "R": return false;}
+         _U.badCase($moduleName,
+         "between lines 60 and 64");
+      }();
+   });
+   var Context = function (a) {
+      return {_: {},actions: a};
+   };
+   var E = function (a) {
+      return {ctor: "E",_0: a};
+   };
+   var newEmail = F4(function (title,
+   from,
+   date,
+   body) {
+      return E({_: {}
+               ,body: body
+               ,date: date
+               ,done: false
+               ,from: from
+               ,isSnoozed: false
+               ,more: false
+               ,pinned: false
+               ,snoozeDate: "2016-03-01"
+               ,title: title
+               ,to: "goodbye@test.me"});
+   });
+   var R = function (a) {
+      return {ctor: "R",_0: a};
+   };
+   var newReminder = F2(function (body,
+   created) {
+      return R({_: {}
+               ,body: body
+               ,created: created
+               ,done: false
+               ,isSnoozed: false
+               ,pinned: false
+               ,snoozeDate: "2016-03-01"});
+   });
+   var update = F2(function (action,
+   model) {
+      return function () {
+         switch (action.ctor)
+         {case "Mark":
+            return function () {
+                 var changeMark = function (t) {
+                    return t.done ? _U.replace([["done"
+                                                ,false]],
+                    t) : _U.replace([["done",true]],
+                    t);
+                 };
+                 return function () {
+                    switch (model.ctor)
+                    {case "E":
+                       return E(changeMark(model._0));
+                       case "R":
+                       return R(changeMark(model._0));}
+                    _U.badCase($moduleName,
+                    "between lines 157 and 160");
+                 }();
+              }();
+            case "More":
+            return function () {
+                 var changeVisibility = function (t) {
+                    return t.more ? _U.replace([["more"
+                                                ,false]],
+                    t) : _U.replace([["more",true]],
+                    t);
+                 };
+                 return function () {
+                    switch (model.ctor)
+                    {case "E":
+                       return E(changeVisibility(model._0));
+                       case "R": return R(model._0);}
+                    _U.badCase($moduleName,
+                    "between lines 148 and 151");
+                 }();
+              }();
+            case "Pin": return function () {
+                 var changePin = function (t) {
+                    return t.pinned ? _U.replace([["pinned"
+                                                  ,false]],
+                    t) : _U.replace([["pinned"
+                                     ,true]],
+                    t);
+                 };
+                 return function () {
+                    switch (model.ctor)
+                    {case "E":
+                       return E(changePin(model._0));
+                       case "R":
+                       return R(changePin(model._0));}
+                    _U.badCase($moduleName,
+                    "between lines 166 and 169");
+                 }();
+              }();
+            case "Snooze":
+            return function () {
+                 var changeSnooze = function (t) {
+                    return t.isSnoozed ? _U.replace([["isSnoozed"
+                                                     ,false]],
+                    t) : _U.replace([["isSnoozed"
+                                     ,true]],
+                    t);
+                 };
+                 return function () {
+                    switch (model.ctor)
+                    {case "E":
+                       return E(changeSnooze(model._0));
+                       case "R":
+                       return R(changeSnooze(model._0));}
+                    _U.badCase($moduleName,
+                    "between lines 175 and 178");
+                 }();
+              }();
+            case "UpdateSnoozeDate":
+            return function () {
+                 var changeSnoozeDate = function (t) {
+                    return _U.replace([["snoozeDate"
+                                       ,action._0]],
+                    t);
+                 };
+                 return function () {
+                    switch (model.ctor)
+                    {case "E":
+                       return E(changeSnoozeDate(model._0));
+                       case "R":
+                       return R(changeSnoozeDate(model._0));}
+                    _U.badCase($moduleName,
+                    "between lines 182 and 186");
+                 }();
+              }();}
+         _U.badCase($moduleName,
+         "between lines 141 and 186");
+      }();
+   });
+   _elm.TodoItem.values = {_op: _op
+                          ,R: R
+                          ,E: E
+                          ,Context: Context
+                          ,newReminder: newReminder
+                          ,newEmail: newEmail
+                          ,compareModel: compareModel
+                          ,emailCompare: emailCompare
+                          ,elementView: elementView
+                          ,taskButton: taskButton
+                          ,More: More
+                          ,Mark: Mark
+                          ,Pin: Pin
+                          ,UpdateSnoozeDate: UpdateSnoozeDate
+                          ,Snooze: Snooze
+                          ,update: update
+                          ,getDate: getDate
+                          ,getPinned: getPinned
+                          ,getDone: getDone
+                          ,getSnoozeDate: getSnoozeDate
+                          ,getIsSnoozed: getIsSnoozed
+                          ,normalSort: normalSort
+                          ,reverseSort: reverseSort
+                          ,getCorrectCss: getCorrectCss
+                          ,combineAttributes: combineAttributes
+                          ,combineAttributesAcc: combineAttributesAcc
+                          ,pinnedStyle: pinnedStyle
+                          ,focusedStyle: focusedStyle
+                          ,overdueStyle: overdueStyle
+                          ,borderStyle: borderStyle
+                          ,snoozedStyle: snoozedStyle
+                          ,emptyStyle: emptyStyle};
+   return _elm.TodoItem.values;
+};

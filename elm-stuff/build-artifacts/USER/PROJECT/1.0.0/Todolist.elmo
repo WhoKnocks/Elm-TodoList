@@ -1,0 +1,131 @@
+Elm.Todolist = Elm.Todolist || {};
+Elm.Todolist.make = function (_elm) {
+   "use strict";
+   _elm.Todolist = _elm.Todolist || {};
+   if (_elm.Todolist.values)
+   return _elm.Todolist.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Todolist",
+   $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Static = Elm.Static.make(_elm),
+   $String = Elm.String.make(_elm);
+   var update = F2(function (action,
+   element) {
+      return function () {
+         switch (action.ctor)
+         {case "Mark": return element;
+            case "More": return element;
+            case "Pin": return element;}
+         _U.badCase($moduleName,
+         "between lines 66 and 69");
+      }();
+   });
+   var Pin = {ctor: "Pin"};
+   var actions = $Signal.mailbox(Pin);
+   var Mark = {ctor: "Mark"};
+   var More = {ctor: "More"};
+   var taskButton = F3(function (address,
+   action,
+   text) {
+      return A2($Html.button,
+      _L.fromArray([A2($Html$Events.onClick,
+      address,
+      action)]),
+      _L.fromArray([$Html.text(text)]));
+   });
+   var elementView = F2(function (address,
+   element) {
+      return function () {
+         switch (element.ctor)
+         {case "E": return A2($Html.li,
+              _L.fromArray([]),
+              _L.fromArray([A2($Html.div,
+              _L.fromArray([]),
+              _L.fromArray([A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text(A2($Basics._op["++"],
+                           element._0.title,
+                           A2($Basics._op["++"],
+                           " | ",
+                           element._0.from)))]))
+                           ,A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text($Basics.not(element._0.more) ? A2($String.left,
+                           200,
+                           element._0.body) : element._0.body)]))
+                           ,A2(taskButton,
+                           address,
+                           More)(element._0.more ? "Less" : "More")
+                           ,A3(taskButton,
+                           address,
+                           Mark,
+                           "Mark as Done")
+                           ,A3(taskButton,
+                           address,
+                           Pin,
+                           "Pin")
+                           ,A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text(A2($Basics._op["++"],
+                           "Date: ",
+                           element._0.date))]))]))]));
+            case "R": return A2($Html.li,
+              _L.fromArray([]),
+              _L.fromArray([A2($Html.div,
+              _L.fromArray([]),
+              _L.fromArray([A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text(element._0.body)]))
+                           ,A3(taskButton,
+                           address,
+                           Mark,
+                           "Mark as Done")
+                           ,A3(taskButton,
+                           address,
+                           Pin,
+                           "Pin")
+                           ,A2($Html.p,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text(A2($Basics._op["++"],
+                           "Date: ",
+                           element._0.created))]))]))]));}
+         _U.badCase($moduleName,
+         "between lines 26 and 49");
+      }();
+   });
+   var taskList = F2(function (address,
+   elements) {
+      return A2($Html.ul,
+      _L.fromArray([]),
+      A2($List.map,
+      elementView(address),
+      elements));
+   });
+   var E = function (a) {
+      return {ctor: "E",_0: a};
+   };
+   var R = function (a) {
+      return {ctor: "R",_0: a};
+   };
+   _elm.Todolist.values = {_op: _op
+                          ,R: R
+                          ,E: E
+                          ,taskList: taskList
+                          ,elementView: elementView
+                          ,taskButton: taskButton
+                          ,More: More
+                          ,Mark: Mark
+                          ,Pin: Pin
+                          ,actions: actions
+                          ,update: update};
+   return _elm.Todolist.values;
+};

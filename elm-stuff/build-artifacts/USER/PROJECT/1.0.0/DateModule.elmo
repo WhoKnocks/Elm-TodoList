@@ -1,0 +1,22 @@
+Elm.DateModule = Elm.DateModule || {};
+Elm.DateModule.make = function (_elm) {
+   "use strict";
+   _elm.DateModule = _elm.DateModule || {};
+   if (_elm.DateModule.values)
+   return _elm.DateModule.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "DateModule",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Native$DateModule = Elm.Native.DateModule.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var getDate = $Native$DateModule.getDate;
+   _elm.DateModule.values = {_op: _op
+                            ,getDate: getDate};
+   return _elm.DateModule.values;
+};

@@ -1,0 +1,104 @@
+Elm.Static = Elm.Static || {};
+Elm.Static.make = function (_elm) {
+   "use strict";
+   _elm.Static = _elm.Static || {};
+   if (_elm.Static.values)
+   return _elm.Static.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Static",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var emails = _L.fromArray([{_: {}
+                              ,body: "Collaboratively administrate empowered markets via plug-and-play\n                networks. Dynamically procrastinate B2C users after installed base\n                benefits. Dramatically visualize customer directed convergence without\n                revolutionary ROI.\n\n                Efficiently unleash cross-media information without cross-media\n                value. Quickly maximize timely deliverables for real-time\n                schemas. Dramatically maintain clicks-and-mortar solutions\n                without functional solutions.\n\n                Completely synergize resource taxing relationships via premier\n                niche markets. Professionally cultivate one-to-one customer\n                service with robust ideas. Dynamically innovate\n                resource-leveling customer service for state of the art customer\n                service."
+                              ,date: "2015-01-30"
+                              ,done: false
+                              ,from: "bossman@corporate.me"
+                              ,isSnoozed: false
+                              ,more: false
+                              ,pinned: false
+                              ,snoozeDate: "2016-03-01"
+                              ,title: "Corporate Ipsum"
+                              ,to: "manager@corporate.me"}
+                             ,{_: {}
+                              ,body: "This is the body of an email with less than 200 characters."
+                              ,date: "2015-09-30"
+                              ,done: false
+                              ,from: "hello@test.me"
+                              ,isSnoozed: false
+                              ,more: false
+                              ,pinned: false
+                              ,snoozeDate: "2016-03-01"
+                              ,title: "Shorter than 200"
+                              ,to: "goodbye@test.me"}]);
+   var reminders = _L.fromArray([{_: {}
+                                 ,body: "Take out the trash"
+                                 ,created: "2016-09-30"
+                                 ,done: false
+                                 ,isSnoozed: false
+                                 ,pinned: false
+                                 ,snoozeDate: "2016-03-01"}
+                                ,{_: {}
+                                 ,body: "Groceries"
+                                 ,created: "2015-09-25"
+                                 ,done: false
+                                 ,isSnoozed: false
+                                 ,pinned: false
+                                 ,snoozeDate: "2016-03-01"}]);
+   var Reminder = F6(function (a,
+   b,
+   c,
+   d,
+   e,
+   f) {
+      return {_: {}
+             ,body: a
+             ,created: b
+             ,done: c
+             ,isSnoozed: f
+             ,pinned: d
+             ,snoozeDate: e};
+   });
+   var Email = function (a) {
+      return function (b) {
+         return function (c) {
+            return function (d) {
+               return function (e) {
+                  return function (f) {
+                     return function (g) {
+                        return function (h) {
+                           return function (i) {
+                              return function (j) {
+                                 return {_: {}
+                                        ,body: d
+                                        ,date: e
+                                        ,done: g
+                                        ,from: a
+                                        ,isSnoozed: j
+                                        ,more: f
+                                        ,pinned: h
+                                        ,snoozeDate: i
+                                        ,title: c
+                                        ,to: b};
+                              };
+                           };
+                        };
+                     };
+                  };
+               };
+            };
+         };
+      };
+   };
+   _elm.Static.values = {_op: _op
+                        ,Email: Email
+                        ,Reminder: Reminder
+                        ,reminders: reminders
+                        ,emails: emails};
+   return _elm.Static.values;
+};

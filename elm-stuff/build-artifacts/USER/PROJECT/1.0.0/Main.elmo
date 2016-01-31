@@ -1,0 +1,766 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values)
+   return _elm.Main.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Main",
+   $Basics = Elm.Basics.make(_elm),
+   $Char = Elm.Char.make(_elm),
+   $Date = Elm.Date.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $Http = Elm.Http.make(_elm),
+   $Json$Decode = Elm.Json.Decode.make(_elm),
+   $Keyboard = Elm.Keyboard.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Static = Elm.Static.make(_elm),
+   $String = Elm.String.make(_elm),
+   $Task = Elm.Task.make(_elm),
+   $Time = Elm.Time.make(_elm),
+   $TodoItem = Elm.TodoItem.make(_elm);
+   var ulStyleDone = $Html$Attributes.style(_L.fromArray([{ctor: "_Tuple2"
+                                                          ,_0: "padding"
+                                                          ,_1: "0"}
+                                                         ,{ctor: "_Tuple2"
+                                                          ,_0: "list-style-type"
+                                                          ,_1: "none"}
+                                                         ,{ctor: "_Tuple2"
+                                                          ,_0: "opacity"
+                                                          ,_1: "0.7"}]));
+   var ulStyleTodo = $Html$Attributes.style(_L.fromArray([{ctor: "_Tuple2"
+                                                          ,_0: "padding"
+                                                          ,_1: "0"}
+                                                         ,{ctor: "_Tuple2"
+                                                          ,_0: "list-style-type"
+                                                          ,_1: "none"}]));
+   var mainDivStyle = $Html$Attributes.style(_L.fromArray([{ctor: "_Tuple2"
+                                                           ,_0: "width"
+                                                           ,_1: "50%"}
+                                                          ,{ctor: "_Tuple2"
+                                                           ,_0: "margin"
+                                                           ,_1: "auto"}]));
+   var dateStringToNumber = function (month) {
+      return function () {
+         switch (month.ctor)
+         {case "Apr": return "04";
+            case "Aug": return "08";
+            case "Dec": return "12";
+            case "Feb": return "02";
+            case "Jan": return "01";
+            case "Jul": return "07";
+            case "Jun": return "06";
+            case "Mar": return "03";
+            case "May": return "05";
+            case "Nov": return "11";
+            case "Oct": return "10";
+            case "Sep": return "09";}
+         _U.badCase($moduleName,
+         "between lines 382 and 396");
+      }();
+   };
+   var calcMaxFocusCounter = function (model) {
+      return model.isDoneVisible ? $List.length(model.elements) - 1 : $List.length(model.elements) - $List.length(A2($List.filter,
+      function (_v1) {
+         return function () {
+            switch (_v1.ctor)
+            {case "_Tuple2":
+               return $TodoItem.getDone(_v1._1);}
+            _U.badCase($moduleName,
+            "on line 378, column 87 to 105");
+         }();
+      },
+      model.elements)) - 1;
+   };
+   var zip = $List.map2(F2(function (v0,
+   v1) {
+      return {ctor: "_Tuple2"
+             ,_0: v0
+             ,_1: v1};
+   }));
+   var cleanIf = F2(function (bool,
+   html) {
+      return bool ? html : $Html.text("");
+   });
+   var isOverdue = F3(function (deadline,
+   date,
+   done) {
+      return _U.cmp(deadline,
+      date) < 0 && $Basics.not(done);
+   });
+   var isFocused = F2(function (focusedIndex,
+   index) {
+      return _U.eq(focusedIndex,
+      index);
+   });
+   var sortElementsReversed = F2(function (_v5,
+   _v6) {
+      return function () {
+         switch (_v6.ctor)
+         {case "_Tuple2":
+            return function () {
+                 switch (_v5.ctor)
+                 {case "_Tuple2":
+                    return A2($TodoItem.reverseSort,
+                      _v5._1,
+                      _v6._1);}
+                 _U.badCase($moduleName,
+                 "on line 349, column 3 to 27");
+              }();}
+         _U.badCase($moduleName,
+         "on line 349, column 3 to 27");
+      }();
+   });
+   var sortElements = F2(function (_v13,
+   _v14) {
+      return function () {
+         switch (_v14.ctor)
+         {case "_Tuple2":
+            return function () {
+                 switch (_v13.ctor)
+                 {case "_Tuple2":
+                    return A2($TodoItem.normalSort,
+                      _v13._1,
+                      _v14._1);}
+                 _U.badCase($moduleName,
+                 "on line 345, column 3 to 26");
+              }();}
+         _U.badCase($moduleName,
+         "on line 345, column 3 to 26");
+      }();
+   });
+   var sortTodosWithIndex = F2(function (list,
+   isReversed) {
+      return function () {
+         var listLength = $List.length(list);
+         return isReversed ? A2(zip,
+         _L.range(0,listLength),
+         A2($List.sortWith,
+         sortElementsReversed,
+         list)) : A2(zip,
+         _L.range(0,listLength),
+         A2($List.sortWith,
+         sortElements,
+         list));
+      }();
+   });
+   var findFocusedItemId = function (model) {
+      return A3($List.foldl,
+      F2(function (_v21,id) {
+         return function () {
+            switch (_v21.ctor)
+            {case "_Tuple2":
+               switch (_v21._1.ctor)
+                 {case "_Tuple2":
+                    return _U.eq(model.focusedItem,
+                      _v21._0) ? _v21._1._0 : id;}
+                 break;}
+            _U.badCase($moduleName,
+            "on line 361, column 44 to 93");
+         }();
+      }),
+      0,
+      A2(sortTodosWithIndex,
+      model.elements,
+      model.isSortReversed));
+   };
+   var emailJsonDecoder = function () {
+      var makeEmail = A5($Json$Decode.object4,
+      F4(function (title,
+      from,
+      date,
+      body) {
+         return A4($TodoItem.newEmail,
+         title,
+         from,
+         date,
+         body);
+      }),
+      A2($Json$Decode._op[":="],
+      "title",
+      $Json$Decode.string),
+      A2($Json$Decode._op[":="],
+      "from",
+      $Json$Decode.string),
+      A2($Json$Decode._op[":="],
+      "date",
+      $Json$Decode.string),
+      A2($Json$Decode._op[":="],
+      "body",
+      $Json$Decode.string));
+      return A2($Json$Decode._op[":="],
+      "emails",
+      $Json$Decode.list(makeEmail));
+   }();
+   var addNewEmail = F2(function (newEmail,
+   model) {
+      return A3($List.foldr,
+      F2(function (_v27,bool) {
+         return function () {
+            switch (_v27.ctor)
+            {case "_Tuple2":
+               return bool ? bool : A2($TodoItem.compareModel,
+                 newEmail,
+                 _v27._1);}
+            _U.badCase($moduleName,
+            "on line 301, column 38 to 97");
+         }();
+      }),
+      false,
+      model.elements) ? model : _U.replace([["nextId"
+                                            ,model.nextId + 1]
+                                           ,["elements"
+                                            ,A2($Basics._op["++"],
+                                            model.elements,
+                                            _L.fromArray([{ctor: "_Tuple2"
+                                                          ,_0: model.nextId
+                                                          ,_1: newEmail}]))]],
+      model);
+   });
+   var update = F2(function (_v31,
+   model) {
+      return function () {
+         switch (_v31.ctor)
+         {case "_Tuple2":
+            return function () {
+                 var getYear = $Date.year($Date.fromTime(_v31._0));
+                 var getMonth = dateStringToNumber($Date.month($Date.fromTime(_v31._0)));
+                 var getDay = $Date.day($Date.fromTime(_v31._0));
+                 var getDateString = A2($Basics._op["++"],
+                 $Basics.toString(getYear),
+                 A2($Basics._op["++"],
+                 "-",
+                 A2($Basics._op["++"],
+                 getMonth,
+                 A2($Basics._op["++"],
+                 "-",
+                 $Basics.toString(getDay)))));
+                 return $Debug.watch("model")(function () {
+                    switch (_v31._1.ctor)
+                    {case "Add":
+                       return _U.replace([["nextId"
+                                          ,model.nextId + 1]
+                                         ,["inputRemBody",""]
+                                         ,["elements"
+                                          ,$String.isEmpty(model.inputRemBody) ? model.elements : A2($Basics._op["++"],
+                                          model.elements,
+                                          _L.fromArray([{ctor: "_Tuple2"
+                                                        ,_0: model.nextId
+                                                        ,_1: A2($TodoItem.newReminder,
+                                                        model.inputRemBody,
+                                                        model.inputRemDate)}]))]],
+                         model);
+                       case "AddEmails":
+                       return A3($List.foldr,
+                         addNewEmail,
+                         model,
+                         _v31._1._0);
+                       case "DecreaseFocus":
+                       return _U.replace([["focusedItem"
+                                          ,!_U.eq(model.focusedItem,
+                                          0) ? model.focusedItem - 1 : calcMaxFocusCounter(model)]],
+                         model);
+                       case "Error":
+                       return _U.replace([["test"
+                                          ,_v31._1._0]],
+                         model);
+                       case "IncreaseFocus":
+                       return _U.replace([["focusedItem"
+                                          ,!_U.eq(calcMaxFocusCounter(model),
+                                          model.focusedItem) ? model.focusedItem + 1 : 0]],
+                         model);
+                       case "MarkAllDone":
+                       return function () {
+                            var updateTodoItem = function (_v43) {
+                               return function () {
+                                  switch (_v43.ctor)
+                                  {case "_Tuple2":
+                                     return $Basics.not($TodoItem.getDone(_v43._1)) && $Basics.not($TodoItem.getIsSnoozed(_v43._1)) ? {ctor: "_Tuple2"
+                                                                                                                                      ,_0: _v43._0
+                                                                                                                                      ,_1: A2($TodoItem.update,
+                                                                                                                                      $TodoItem.Mark,
+                                                                                                                                      _v43._1)} : {ctor: "_Tuple2"
+                                                                                                                                                  ,_0: _v43._0
+                                                                                                                                                  ,_1: _v43._1};}
+                                  _U.badCase($moduleName,
+                                  "between lines 292 and 294");
+                               }();
+                            };
+                            return _U.replace([["elements"
+                                               ,A2($List.map,
+                                               updateTodoItem,
+                                               model.elements)]],
+                            model);
+                         }();
+                       case "Modify":
+                       return function () {
+                            var updateTodoItem = function (_v47) {
+                               return function () {
+                                  switch (_v47.ctor)
+                                  {case "_Tuple2":
+                                     return _U.eq(_v47._0,
+                                       _v31._1._0) ? {ctor: "_Tuple2"
+                                                     ,_0: _v47._0
+                                                     ,_1: A2($TodoItem.update,
+                                                     _v31._1._1,
+                                                     _v47._1)} : {ctor: "_Tuple2"
+                                                                 ,_0: _v47._0
+                                                                 ,_1: _v47._1};}
+                                  _U.badCase($moduleName,
+                                  "between lines 250 and 252");
+                               }();
+                            };
+                            return _U.replace([["elements"
+                                               ,A2($List.map,
+                                               updateTodoItem,
+                                               model.elements)]],
+                            model);
+                         }();
+                       case "NoAction": return model;
+                       case "ShortcutAction":
+                       return function () {
+                            var idToPin = findFocusedItemId(model);
+                            var updateTodoItem = function (_v51) {
+                               return function () {
+                                  switch (_v51.ctor)
+                                  {case "_Tuple2":
+                                     return _U.eq(_v51._0,
+                                       idToPin) ? {ctor: "_Tuple2"
+                                                  ,_0: _v51._0
+                                                  ,_1: A2($TodoItem.update,
+                                                  _v31._1._0,
+                                                  _v51._1)} : {ctor: "_Tuple2"
+                                                              ,_0: _v51._0
+                                                              ,_1: _v51._1};}
+                                  _U.badCase($moduleName,
+                                  "between lines 276 and 278");
+                               }();
+                            };
+                            return _U.replace([["elements"
+                                               ,A2($List.map,
+                                               updateTodoItem,
+                                               model.elements)]],
+                            model);
+                         }();
+                       case "SortNormal":
+                       return _U.replace([["isSortReversed"
+                                          ,false]],
+                         model);
+                       case "SortReversed":
+                       return _U.replace([["isSortReversed"
+                                          ,true]],
+                         model);
+                       case "ToggleDoneView":
+                       return model.isDoneVisible ? _U.replace([["isDoneVisible"
+                                                                ,false]],
+                         model) : _U.replace([["isDoneVisible"
+                                              ,true]],
+                         model);
+                       case "ToggleReminderView":
+                       return model.isReminderVisible ? _U.replace([["isReminderVisible"
+                                                                    ,false]],
+                         model) : _U.replace([["isReminderVisible"
+                                              ,true]],
+                         model);
+                       case "UpdateInputRemBody":
+                       return _U.replace([["inputRemBody"
+                                          ,_v31._1._0]],
+                         model);
+                       case "UpdateInputRemDate":
+                       return _U.replace([["inputRemDate"
+                                          ,_v31._1._0]],
+                         model);
+                       case "UpdateTime":
+                       return _U.replace([["currDate"
+                                          ,getDateString]
+                                         ,["inputRemDate"
+                                          ,getDateString]],
+                         model);}
+                    _U.badCase($moduleName,
+                    "between lines 247 and 296");
+                 }());
+              }();}
+         _U.badCase($moduleName,
+         "between lines 242 and 297");
+      }();
+   });
+   var NoAction = {ctor: "NoAction"};
+   var Error = function (a) {
+      return {ctor: "Error",_0: a};
+   };
+   var AddEmails = function (a) {
+      return {ctor: "AddEmails"
+             ,_0: a};
+   };
+   var UpdateTime = {ctor: "UpdateTime"};
+   var MarkAllDone = {ctor: "MarkAllDone"};
+   var SortReversed = {ctor: "SortReversed"};
+   var SortNormal = {ctor: "SortNormal"};
+   var ToggleReminderView = {ctor: "ToggleReminderView"};
+   var ToggleDoneView = {ctor: "ToggleDoneView"};
+   var ShortcutAction = function (a) {
+      return {ctor: "ShortcutAction"
+             ,_0: a};
+   };
+   var DecreaseFocus = {ctor: "DecreaseFocus"};
+   var IncreaseFocus = {ctor: "IncreaseFocus"};
+   var UpdateInputRemDate = function (a) {
+      return {ctor: "UpdateInputRemDate"
+             ,_0: a};
+   };
+   var UpdateInputRemBody = function (a) {
+      return {ctor: "UpdateInputRemBody"
+             ,_0: a};
+   };
+   var Add = {ctor: "Add"};
+   var Modify = F2(function (a,b) {
+      return {ctor: "Modify"
+             ,_0: a
+             ,_1: b};
+   });
+   var actionChooser = F3(function (action1,
+   action2,
+   b) {
+      return b ? action1 : action2;
+   });
+   var getComb = F3(function (ac1,
+   ac2,
+   $char) {
+      return A2($Signal.map,
+      A2(actionChooser,ac1,ac2),
+      A3($Signal.map2,
+      F2(function (x,y) {
+         return x && y;
+      }),
+      $Keyboard.alt,
+      $Keyboard.isDown($Char.toCode($char))));
+   });
+   var keycomb = $Signal.mergeMany(_L.fromArray([A3(getComb,
+                                                IncreaseFocus,
+                                                NoAction,
+                                                _U.chr("J"))
+                                                ,A3(getComb,
+                                                DecreaseFocus,
+                                                NoAction,
+                                                _U.chr("K"))
+                                                ,A3(getComb,
+                                                ShortcutAction($TodoItem.Pin),
+                                                NoAction,
+                                                _U.chr("P"))
+                                                ,A3(getComb,
+                                                ShortcutAction($TodoItem.Mark),
+                                                NoAction,
+                                                _U.chr("X"))
+                                                ,A3(getComb,
+                                                ShortcutAction($TodoItem.More),
+                                                NoAction,
+                                                _U.chr("O"))
+                                                ,A3(getComb,
+                                                ToggleDoneView,
+                                                NoAction,
+                                                _U.chr("V"))
+                                                ,A3(getComb,
+                                                ToggleReminderView,
+                                                NoAction,
+                                                _U.chr("R"))
+                                                ,A3(getComb,
+                                                SortReversed,
+                                                SortNormal,
+                                                _U.chr("S"))
+                                                ,A3(getComb,
+                                                MarkAllDone,
+                                                NoAction,
+                                                _U.chr("A"))]));
+   var viewAddReminder = F3(function (address,
+   body,
+   date) {
+      return A2($Html.div,
+      _L.fromArray([]),
+      _L.fromArray([A2($Html.h1,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text("Reminder")]))
+                   ,A2($Html.input,
+                   _L.fromArray([A3($Html$Events.on,
+                                "input",
+                                $Html$Events.targetValue,
+                                function ($) {
+                                   return $Signal.message(address)(UpdateInputRemBody($));
+                                })
+                                ,$Html$Attributes.value(body)]),
+                   _L.fromArray([]))
+                   ,A2($Html.input,
+                   _L.fromArray([$Html$Attributes.type$("date")
+                                ,$Html$Attributes.value(date)
+                                ,A3($Html$Events.on,
+                                "input",
+                                $Html$Events.targetValue,
+                                function ($) {
+                                   return $Signal.message(address)(UpdateInputRemDate($));
+                                })]),
+                   _L.fromArray([]))
+                   ,A2($Html.button,
+                   _L.fromArray([A2($Html$Events.onClick,
+                   address,
+                   Add)]),
+                   _L.fromArray([$Html.text("Add")]))]));
+   });
+   var viewTodoItem = F3(function (mainModel,
+   address,
+   _v55) {
+      return function () {
+         switch (_v55.ctor)
+         {case "_Tuple2":
+            switch (_v55._1.ctor)
+              {case "_Tuple2":
+                 return function () {
+                      var context = $TodoItem.Context(A2($Signal.forwardTo,
+                      address,
+                      Modify(_v55._1._0)));
+                      return A4($TodoItem.elementView,
+                      context,
+                      _v55._1._1,
+                      A2(isFocused,
+                      _v55._0,
+                      mainModel.focusedItem),
+                      A3(isOverdue,
+                      $TodoItem.getDate(_v55._1._1),
+                      mainModel.currDate,
+                      $TodoItem.getDone(_v55._1._1)));
+                   }();}
+              break;}
+         _U.badCase($moduleName,
+         "between lines 168 and 172");
+      }();
+   });
+   var viewDone = F2(function (address,
+   model) {
+      return function () {
+         var doneList = A2($List.filter,
+         function (_v61) {
+            return function () {
+               switch (_v61.ctor)
+               {case "_Tuple2":
+                  switch (_v61._1.ctor)
+                    {case "_Tuple2":
+                       return $TodoItem.getDone(_v61._1._1);}
+                    break;}
+               _U.badCase($moduleName,
+               "on line 161, column 46 to 64");
+            }();
+         },
+         A2(sortTodosWithIndex,
+         model.elements,
+         model.isSortReversed));
+         return A2($Html.div,
+         _L.fromArray([]),
+         _L.fromArray([A2(cleanIf,
+                      $Basics.not($List.isEmpty(doneList)),
+                      A2($Html.h1,
+                      _L.fromArray([]),
+                      _L.fromArray([$Html.text("Done")])))
+                      ,A2($Html.ul,
+                      _L.fromArray([ulStyleDone]),
+                      A2($List.map,
+                      A2(viewTodoItem,model,address),
+                      doneList))]));
+      }();
+   });
+   var viewTodo = F2(function (address,
+   model) {
+      return function () {
+         var todoList = A2($List.filter,
+         function (_v67) {
+            return function () {
+               switch (_v67.ctor)
+               {case "_Tuple2":
+                  switch (_v67._1.ctor)
+                    {case "_Tuple2":
+                       return $Basics.not($TodoItem.getDone(_v67._1._1)) && $Basics.not(_U.cmp($TodoItem.getSnoozeDate(_v67._1._1),
+                         model.currDate) > 0 && $TodoItem.getIsSnoozed(_v67._1._1));}
+                    break;}
+               _U.badCase($moduleName,
+               "on line 154, column 49 to 156");
+            }();
+         },
+         A2(sortTodosWithIndex,
+         model.elements,
+         model.isSortReversed));
+         return A2($Html.div,
+         _L.fromArray([]),
+         _L.fromArray([A2(cleanIf,
+                      $Basics.not($List.isEmpty(todoList)),
+                      A2($Html.h1,
+                      _L.fromArray([]),
+                      _L.fromArray([$Html.text("To Do")])))
+                      ,A2($Html.ul,
+                      _L.fromArray([ulStyleTodo]),
+                      A2($List.map,
+                      A2(viewTodoItem,model,address),
+                      todoList))]));
+      }();
+   });
+   var view = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([mainDivStyle]),
+      _L.fromArray([A2(viewTodo,
+                   address,
+                   model)
+                   ,A2(cleanIf,
+                   model.isDoneVisible,
+                   A2(viewDone,address,model))
+                   ,A2(cleanIf,
+                   model.isReminderVisible,
+                   A3(viewAddReminder,
+                   address,
+                   model.inputRemBody,
+                   model.inputRemDate))]));
+   });
+   var initModel = {_: {}
+                   ,currDate: ""
+                   ,elements: A2(zip,
+                   _L.fromArray([0,1,2,3]),
+                   A2($List.append,
+                   A2($List.map,
+                   function (x) {
+                      return $TodoItem.E(x);
+                   },
+                   $Static.emails),
+                   A2($List.map,
+                   function (x) {
+                      return $TodoItem.R(x);
+                   },
+                   $Static.reminders)))
+                   ,focusedItem: 0
+                   ,inputRemBody: ""
+                   ,inputRemDate: ""
+                   ,isDoneVisible: true
+                   ,isReminderVisible: true
+                   ,isSortReversed: false
+                   ,nextId: 4
+                   ,test: "Used to debug, messages get placed here"};
+   var Model = function (a) {
+      return function (b) {
+         return function (c) {
+            return function (d) {
+               return function (e) {
+                  return function (f) {
+                     return function (g) {
+                        return function (h) {
+                           return function (i) {
+                              return function (j) {
+                                 return {_: {}
+                                        ,currDate: e
+                                        ,elements: a
+                                        ,focusedItem: f
+                                        ,inputRemBody: c
+                                        ,inputRemDate: d
+                                        ,isDoneVisible: h
+                                        ,isReminderVisible: i
+                                        ,isSortReversed: g
+                                        ,nextId: b
+                                        ,test: j};
+                              };
+                           };
+                        };
+                     };
+                  };
+               };
+            };
+         };
+      };
+   };
+   var mailActions = $Signal.mailbox(NoAction);
+   var initTime = Elm.Native.Task.make(_elm).perform(A2($Signal.send,
+   mailActions.address,
+   UpdateTime));
+   var getEmailData = function (_v73) {
+      return function () {
+         return function () {
+            var request = $Task.map(AddEmails)(A2($Http.get,
+            emailJsonDecoder,
+            "https://crossorigin.me/https://people.cs.kuleuven.be/~bob.reynders/2015-2016/emails.json"));
+            return A2($Task.andThen,
+            A2($Task.onError,
+            request,
+            function (err) {
+               return $Task.succeed(Error($Basics.toString(err)));
+            }),
+            function (action) {
+               return A2($Signal.send,
+               mailActions.address,
+               action);
+            });
+         }();
+      }();
+   };
+   var getEmails = Elm.Native.Task.make(_elm).performSignal("getEmails",
+   A2($Signal.map,
+   getEmailData,
+   $Time.every($Time.minute / 6.0)));
+   var state = A3($Signal.foldp,
+   update,
+   initModel,
+   $Time.timestamp($Signal.mergeMany(_L.fromArray([mailActions.signal
+                                                  ,keycomb]))));
+   var main = A2($Signal.map,
+   view(mailActions.address),
+   state);
+   _elm.Main.values = {_op: _op
+                      ,main: main
+                      ,state: state
+                      ,mailActions: mailActions
+                      ,Model: Model
+                      ,initModel: initModel
+                      ,view: view
+                      ,viewTodo: viewTodo
+                      ,viewDone: viewDone
+                      ,viewTodoItem: viewTodoItem
+                      ,viewAddReminder: viewAddReminder
+                      ,keycomb: keycomb
+                      ,getComb: getComb
+                      ,actionChooser: actionChooser
+                      ,Modify: Modify
+                      ,Add: Add
+                      ,UpdateInputRemBody: UpdateInputRemBody
+                      ,UpdateInputRemDate: UpdateInputRemDate
+                      ,IncreaseFocus: IncreaseFocus
+                      ,DecreaseFocus: DecreaseFocus
+                      ,ShortcutAction: ShortcutAction
+                      ,ToggleDoneView: ToggleDoneView
+                      ,ToggleReminderView: ToggleReminderView
+                      ,SortNormal: SortNormal
+                      ,SortReversed: SortReversed
+                      ,MarkAllDone: MarkAllDone
+                      ,UpdateTime: UpdateTime
+                      ,AddEmails: AddEmails
+                      ,Error: Error
+                      ,NoAction: NoAction
+                      ,update: update
+                      ,addNewEmail: addNewEmail
+                      ,getEmailData: getEmailData
+                      ,emailJsonDecoder: emailJsonDecoder
+                      ,sortTodosWithIndex: sortTodosWithIndex
+                      ,sortElements: sortElements
+                      ,sortElementsReversed: sortElementsReversed
+                      ,isFocused: isFocused
+                      ,isOverdue: isOverdue
+                      ,findFocusedItemId: findFocusedItemId
+                      ,cleanIf: cleanIf
+                      ,zip: zip
+                      ,calcMaxFocusCounter: calcMaxFocusCounter
+                      ,dateStringToNumber: dateStringToNumber
+                      ,mainDivStyle: mainDivStyle
+                      ,ulStyleTodo: ulStyleTodo
+                      ,ulStyleDone: ulStyleDone};
+   return _elm.Main.values;
+};
